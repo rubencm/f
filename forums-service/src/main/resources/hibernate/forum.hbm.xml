@@ -1,0 +1,37 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="net.rubencm.forum.forumsservice.domain.aggregates.Forum" table="forums">
+
+        <meta attribute="class-description">
+            This class contains the forum detail.
+        </meta>
+
+        <composite-id name="id" class="net.rubencm.forum.shared.domain.valueobjects.ForumId" access="field">
+            <key-property name="value" column="id" type="org.hibernate.type.UUIDCharType" access="field"/>
+        </composite-id>
+
+        <component name="name" class="net.rubencm.forum.forumsservice.domain.valueobjects.ForumName" access="field">
+            <property name="value" column="name" access="field"/>
+        </component>
+
+        <component name="description" class="net.rubencm.forum.forumsservice.domain.valueobjects.ForumDescription"
+                   access="field">
+            <property name="value" column="description" access="field"/>
+        </component>
+
+        <component name="icon" class="net.rubencm.forum.forumsservice.domain.valueobjects.ForumIcon"
+                   access="field">
+            <property name="value" column="icon" access="field"/>
+        </component>
+
+        <component name="numTopics" class="net.rubencm.forum.forumsservice.domain.valueobjects.NumberTopics"
+                   access="field">
+            <property name="value" column="num_topics" access="field"/>
+        </component>
+
+    </class>
+</hibernate-mapping>

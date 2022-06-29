@@ -1,0 +1,157 @@
+version: '2'
+services:
+
+    eureka-server:
+        container_name: eureka-server
+        build:
+            context: eureka-server
+        image: eureka-server
+        restart: unless-stopped
+        ports:
+            - 8888:8888
+            - 8761:8761
+        networks:
+            - forum-network
+
+    forums-service:
+        build:
+            context: forums-service
+        image: forums-service
+        restart: unless-stopped
+        environment:
+            - MYSQL_HOST=db-forums
+            - MYSQL_PORT=3306
+            - EUREKA_HOST=eureka-server
+            - SERVER_PORT=8080
+            - RABBITMQ_HOST=rabbitmq
+        depends_on:
+            - db-forums
+            - eureka-server
+            - rabbitmq
+        deploy:
+            replicas: 3
+        networks:
+            - forum-network
+
+    frontend-service:
+        container_name: frontend-service
+        build:
+            context: frontend-service
+        image: frontend-service
+        ports:
+            - 3000:3000
+        networks:
+            - forum-network
+
+    gateway-server:
+        container_name: gateway-server
+        build:
+            context: gateway-server
+        image: gateway-server
+        restart: unless-stopped
+        environment:
+            - EUREKA_HOST=eureka-server
+        ports:
+            - 8080:8080
+        depends_on:
+            - eureka-server
+        networks:
+            - forum-network
+
+    messages-service:
+        build:
+            context: messages-service
+        image: messages-service
+        restart: unless-stopped
+        environment:
+            - MYSQL_HOST=db-messages
+            - MYSQL_PORT=3306
+            - EUREKA_HOST=eureka-server
+            - SERVER_PORT=8080
+            - RABBITMQ_HOST=rabbitmq
+        depends_on:
+            - db-messages
+            - eureka-server
+            - rabbitmq
+        deploy:
+            replicas: 3
+        networks:
+            - forum-network
+
+    topics-service:
+        build:
+            context: topics-service
+        image: topics-service
+        restart: unless-stopped
+        environment:
+            - MYSQL_HOST=db-topics
+            - MYSQL_PORT=3306
+            - EUREKA_HOST=eureka-server
+            - SERVER_PORT=8080
+            - RABBITMQ_HOST=rabbitmq
+        depends_on:
+            - db-topics
+            - eureka-server
+            - rabbitmq
+        deploy:
+            replicas: 3
+        networks:
+            - forum-network
+
+    db-forums:
+        container_name: db-forums
+        image: mariadb
+        restart: unless-stopped
+        environment:
+            MARIADB_DATABASE: forums
+            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+        volumes:
+            - ./forums.sql:/docker-entrypoint-initdb.d/forums.sql
+        ports:
+            - '3306:3306'
+        networks:
+            - forum-network
+
+    db-topics:
+        container_name: db-topics
+        image: mariadb
+        restart: unless-stopped
+        environment:
+            MARIADB_DATABASE: topics
+            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+#        volumes:
+#            - ./topics.sql:/docker-entrypoint-initdb.d/topics.sql
+        ports:
+            - '3307:3306'
+        networks:
+            - forum-network
+
+    db-messages:
+        container_name: db-messages
+        image: mariadb
+        restart: unless-stopped
+        environment:
+          MARIADB_DATABASE: messages
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+#        volumes:
+#            - ./messages.sql:/docker-entrypoint-initdb.d/messages.sql
+        ports:
+            - '3308:3306'
+        networks:
+            - forum-network
+
+    rabbitmq:
+        container_name: rabbitmq
+        image: rabbitmq:3.8-management-alpine
+        restart: unless-stopped
+        ports:
+            # AMQP protocol port
+            - '5672:5672'
+            # HTTP management UI
+            - '15672:15672'
+        networks:
+            - forum-network
+
+networks:
+    forum-network:
+        driver: bridge

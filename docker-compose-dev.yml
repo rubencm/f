@@ -1,0 +1,44 @@
+version: '3.3'
+services:
+  db-forums:
+    image: mariadb
+    restart: unless-stopped
+    ports:
+      - '3306:3306'
+    environment:
+      MARIADB_DATABASE: forums
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+    volumes:
+      - ./forums.sql:/docker-entrypoint-initdb.d/forums.sql
+  db-topics:
+    image: mariadb
+    restart: unless-stopped
+    ports:
+      - '3307:3306'
+    environment:
+      MARIADB_DATABASE: topics
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+    volumes:
+      - ./topics.sql:/docker-entrypoint-initdb.d/topics.sql
+  db-messages:
+    image: mariadb
+    restart: unless-stopped
+    ports:
+      - '3308:3306'
+    environment:
+      MARIADB_DATABASE: messages
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+    volumes:
+      - ./messages.sql:/docker-entrypoint-initdb.d/messages.sql
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    restart: unless-stopped
+    #    environment:
+    #      - RABBITMQ_DEFAULT_USER=rabbitmq
+    #      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    #      - RABBITMQ_DEFAULT_VHOST=rabbitmq
+    ports:
+      # AMQP protocol port
+      - '5672:5672'
+      # HTTP management UI
+      - '15672:15672'

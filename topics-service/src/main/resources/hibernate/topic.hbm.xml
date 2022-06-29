@@ -1,0 +1,43 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="net.rubencm.forum.topicsservice.domain.aggregates.Topic" table="topics">
+
+        <meta attribute="class-description">
+            This class contains the topic detail.
+        </meta>
+
+        <composite-id name="id" class="net.rubencm.forum.shared.domain.valueobjects.TopicId" access="field">
+            <key-property name="value" column="id" type="org.hibernate.type.UUIDCharType" access="field"/>
+        </composite-id>
+
+        <component name="title" class="net.rubencm.forum.topicsservice.domain.valueobjects.TopicTitle" access="field">
+            <property name="value" column="title" access="field"/>
+        </component>
+
+        <component name="lastPosterName" class="net.rubencm.forum.shared.domain.valueobjects.User" access="field">
+            <property name="value" column="last_poster_name" access="field"/>
+        </component>
+
+        <property name="lastPostDate" column="last_post_date"/>
+
+        <component name="numMessages" class="net.rubencm.forum.topicsservice.domain.valueobjects.NumberMessages"
+                   access="field">
+            <property name="value" column="num_messages" access="field"/>
+        </component>
+
+        <property name="creationDate" column="creation_date"/>
+
+        <component name="author" class="net.rubencm.forum.shared.domain.valueobjects.User" access="field">
+            <property name="value" column="author" access="field"/>
+        </component>
+
+        <component name="forumId" class="net.rubencm.forum.shared.domain.valueobjects.ForumId" access="field">
+            <property name="value" column="forum_id" type="org.hibernate.type.UUIDCharType" access="field"/>
+        </component>
+
+    </class>
+</hibernate-mapping>

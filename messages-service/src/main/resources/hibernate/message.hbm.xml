@@ -1,0 +1,47 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="net.rubencm.forum.messagesservice.domain.aggregates.Message" table="messages">
+
+        <meta attribute="class-description">
+            This class contains the topic detail.
+        </meta>
+
+        <composite-id name="id" class="net.rubencm.forum.shared.domain.valueobjects.MessageId" access="field">
+            <key-property name="value" column="id" type="org.hibernate.type.UUIDCharType" access="field"/>
+        </composite-id>
+
+        <component name="title" class="net.rubencm.forum.messagesservice.domain.valueobjects.MessageTitle"
+                   access="field">
+            <property name="value" column="title" access="field"/>
+        </component>
+
+        <component name="messageBody" class="net.rubencm.forum.messagesservice.domain.valueobjects.MessageBody"
+                   access="field">
+            <property name="value" column="message_body" access="field" type="text" />
+        </component>
+
+        <component name="posterName" class="net.rubencm.forum.messagesservice.domain.valueobjects.PosterName"
+                   access="field">
+            <property name="value" column="poster_name" access="field"/>
+        </component>
+
+        <component name="numModifications"
+                   class="net.rubencm.forum.messagesservice.domain.valueobjects.NumberModifications" access="field">
+            <property name="value" column="num_modifications" access="field"/>
+        </component>
+
+        <property name="creationDate" column="creation_date"/>
+
+        <property name="lastModificationDate" column="last_modification_date"/>
+
+        <component name="topicId" class="net.rubencm.forum.shared.domain.valueobjects.TopicId" access="field">
+            <property name="value" column="topic_id" type="org.hibernate.type.UUIDCharType" access="field"/>
+        </component>
+
+
+    </class>
+</hibernate-mapping>
